@@ -11,8 +11,9 @@
     <a href="./index.html">voltar</a>
     <script>
         function getData() {
-            const data = axios.get("http://3.12.241.151:3000/submit-test");
-            console.log(data)
+            axios.get("http://3.12.241.151:3000/get-data").then((data) => {
+                console.log(data)
+            });
         }
         getData()
     </script>

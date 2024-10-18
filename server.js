@@ -1,4 +1,3 @@
-// Importar os módulos necessários
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -19,29 +18,32 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-const DiagnosticsModel = mongoose.model("Diagnostic", {
-  nomeacao: Number,
-  repeticao: Number,
-  compreensao: Number,
-  resultadoFinal: String,
-}, {collection: "diagnostics"});
+const DiagnosticsModel = mongoose.model(
+  "Diagnostic",
+  new mongoose.Schema({
+    nomeacao: Number,
+    repeticao: Number,
+    compreensao: Number,
+    resultadoFinal: String,
+  }),
+  { collection: "diagnostics" }
+);
 
 app.post("/", (req, res) => {
   res.status(200).send('Request successful!');
-})
+});
 
 app.get("/get-data", async (req, res) => {
   try {
-    const data = await DiagnosticsModel.find()
-
+    const data = await DiagnosticsModel.find();
     res.status(200).json(data);
   } catch (error) {
     console.error("Erro ao buscar eventos:", error);
-    throw error
+    res.status(500).json({ message: "Erro ao buscar dados." });
   }
 });
 
-app.post("/submit-test", (req, res) => {
+app.post("/submit-test", async (req, res) => {
   const { nomeacao, repeticao, compreensao, resultadoFinal } = req.body;
   const diagnostics = new DiagnosticsModel({
     compreensao: compreensao,
@@ -50,12 +52,16 @@ app.post("/submit-test", (req, res) => {
     repeticao: repeticao,
   });
 
-  diagnostics.save().then(() => {
-    console.log(`data inserted into the database: ${diagnostics}`);
-  });
+  try {
+    await diagnostics.save();
+    console.log(`Data inserted into the database: ${diagnostics}`);
+    res.status(201).json({ message: "Data inserted successfully!" });
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).json({ message: "Error inserting data." });
+  }
 });
 
-// Iniciar o servidor na porta 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${PORT}`);
