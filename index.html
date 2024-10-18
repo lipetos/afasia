@@ -538,7 +538,7 @@
                 document.getElementById("teste").style.display = "none"; // Oculta o teste após o término
 
                 // Enviar resultado via axios (se aplicável)
-                axios.post("ec2-3-136-106-126.us-east-2.compute.amazonaws.com/submit-test", {
+                axios.post("http://3.12.241.151/submit-test", {
                     compreensao: comp,
                     nomeacao: nome,
                     resultadoFinal: diagnostico,
