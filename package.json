@@ -1,0 +1,26 @@
+{
+  "name": "html-css",
+  "version": "1.0.0",
+  "description": "A template for HTML and CSS",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve",
+    "start_db_server": "node server.js"
+  },
+  "keywords": [
+    "html",
+    "css"
+  ],
+  "author": "Ives van Hoorne",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "11.2.0"
+  },
+  "dependencies": {
+    "body-parser": "1.20.3",
+    "express": "4.21.1",
+    "mongodb": "^6.9.0",
+    "mongoose": "^8.7.2",
+    "mysql": "2.18.1"
+  }
+}

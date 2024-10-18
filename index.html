@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Teste Rápido de Afasia</title>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <link rel="preload" href="imagens/banana.png" as="image" />
+        <link rel="preload" href="imagens/casa.png" as="image" />
+        <link rel="preload" href="imagens/cama.png" as="image" />
+        <link rel="preload" href="imagens/flor.png" as="image" />
+        <link rel="preload" href="imagens/mesa (1).png" as="image" />
+        <link rel="preload" href="imagens/ovo.png" as="image" />
+        <link rel="preload" href="imagens/cerebro.png" as="image" />
+        <script src="anime.min.js"></script>
+
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+            @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+            @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+            * {
+                margin: 0px;
+            }
+
+            h3 {
+                font-weight: medium;
+                font-size: 32px;
+                color: black;
+            }
+
+            body {
+                font-family: "Plus Jakarta Sans";
+                color: white;
+                background-color: #fff;
+            }
+
+            #tituloinicio {
+                color: black;
+                font-family: "IBM Plex Mono";
+                text-align: center;
+                font-size: 32px;
+            }
+
+            #tituloinicio > span {
+                -webkit-background-clip: text;
+                background: linear-gradient(#ffb700, #ff6f00);
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            #inicio {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                align-items: center;
+                height: 100vh;
+            }
+
+            #startBtn {
+                font-family: "Plus Jakarta Sans";
+                font-size: medium;
+                font-weight: bold;
+                color: white;
+                background-color: black;
+                height: 50px;
+                border-radius: 10px;
+                border: none;
+                text-decoration: none;
+                width: 250px;
+            }
+
+            #area_resposta {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            textarea:focus,
+            input:focus {
+                outline: none;
+            }
+
+            #resposta {
+                width: 100%;
+                height: 40px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                text-decoration: none !important;
+
+                background-color: #dbdbdb;
+            }
+
+            #submitBtn {
+                font-family: "Plus Jakarta Sans";
+                font-size: medium;
+                font-weight: bold;
+                margin-top: 10px;
+                color: white;
+
+                background-color: black;
+                height: 50px;
+                border-radius: 5px;
+                border: none;
+                text-decoration: none;
+                width: 100%;
+            }
+
+            #cerebro {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                height: 40vh;
+            }
+            #resultado {
+                display: none;
+                font-family: "Plus Jakarta Sans";
+                font-size: 32px; /* Aumenta o tamanho da fonte */
+                font-weight: bold;
+                color: black;
+                text-align: center;
+                padding: 20px;
+                border-radius: 10px;
+                position: fixed; /* Para centralizar na tela */
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); /* Centraliza o texto */
+                width: 80%; /* Largura ajustável */
+                height: auto; /* Altura ajustável */
+                z-index: 1000; /* Certifica-se de que está acima de outros elementos */
+            }
+
+            #compreensaoTitulo {
+                color: black;
+                font-size: 40px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            #nomeacaoTitulo {
+                color: black;
+                font-size: 40px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            #audioBtn {
+                font-family: "Plus Jakarta Sans";
+                font-size: small; /* Menor que o botão de enviar */
+                font-weight: bold;
+                color: white;
+                background-color: black;
+                height: 50px; /* Um pouco menor */
+                border-radius: 5px; /* Mantém a borda arredondada */
+                border: none;
+                text-decoration: none;
+                width: 50%; /* Ligeiramente menor */
+                display: flex;
+                font-size: 20px;
+                margin-top: 10px;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px; /* Mantém a margem para separação */
+                cursor: pointer;
+            }
+
+            #audio {
+                display: none;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
+
+            #audioContainer {
+                display: none;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                padding-top: 100px;
+                padding-bottom: 100px;
+
+                width: 100%;
+            }
+
+            #compreensaoTitulo,
+            #repeticaoTitulo {
+                color: black;
+                margin-bottom: 10px;
+            }
+
+            #submitBtn {
+                margin-top: 20px;
+            }
+
+            #resposta::placeholder {
+                padding-left: 10px;
+            }
+        </style>
+
+        <style>
+            #background-body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                width: 100%;
+                height: 100vh;
+
+                background-color: #f6f4f2;
+                color: #252423;
+            }
+
+            .animation-wrapper {
+                width: 80%;
+                padding-bottom: 40%;
+            }
+
+            .stagger-visualizer {
+                position: absolute;
+                width: 1100px;
+                height: 550px;
+                transform-origin: left top;
+            }
+
+            .stagger-visualizer .dots-wrapper {
+                transform: translateZ(0);
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .stagger-visualizer .dot {
+                position: relative;
+                z-index: 1;
+                width: 23px;
+                height: 23px;
+                margin: 16px;
+                background-color: currentColor;
+                border-radius: 50%;
+            }
+
+            @media (min-width: 740px) {
+                .stagger-visualizer .dot {
+                    background-color: transparent;
+                    background-image: linear-gradient(
+                        180deg,
+                        #ffffff 8%,
+                        #d3cdc6 100%
+                    );
+                }
+            }
+
+            .stagger-visualizer .cursor {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 37px;
+                height: 37px;
+                margin: 9px;
+                background-color: currentColor;
+                border-radius: 50%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="inicio">
+            <h2 id="tituloinicio">
+                Bem-vindo ao Teste Rápido de <span>Afasia!</span>
+            </h2>
+            <img id="cerebro" src="imagens/cerebro.png" />
+            <button id="startBtn" onclick="iniciarTeste()">
+                Iniciar Teste
+            </button>
+        </div>
+
+        <div id="teste" style="display: none">
+            <div id="pergunta">
+                <h3>Responda, por favor, as seguintes perguntas:</h3>
+                <h4 id="nomeacaoTitulo">O que é isso?</h4>
+
+                <div id="audioContainer">
+                    <h4 id="compreensaoTitulo"></h4>
+                    <audio id="audio" controls></audio>
+                    <button id="audioBtn" onclick="tocarAudio()">
+                        Tocar Áudio
+                    </button>
+                </div>
+
+                <img id="imagemNomeacao" src="" alt="Imagem para nomear" />
+                <div id="area_resposta">
+                    <input
+                        type="text"
+                        id="resposta"
+                        placeholder="Sua resposta"
+                    />
+                    <button id="submitBtn" onclick="submeterResposta()">
+                        Enviar Resposta
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="resultado"></div>
+
+        <div id="background-body">
+            <div class="animation-wrapper">
+                <div class="stagger-visualizer">
+                    <div class="cursor color-red"></div>
+                    <div class="dots-wrapper"></div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function fitElementToParent(el, padding) {
+                var timeout = null;
+                function resize() {
+                    if (timeout) clearTimeout(timeout);
+                    anime.set(el, { scale: 1 });
+                    var pad = padding || 0;
+                    var parentEl = el.parentNode;
+                    var elOffsetWidth = el.offsetWidth - pad;
+                    var parentOffsetWidth = parentEl.offsetWidth;
+                    var ratio = parentOffsetWidth / elOffsetWidth;
+                    timeout = setTimeout(anime.set(el, { scale: ratio }), 10);
+                }
+                resize();
+                window.addEventListener("resize", resize);
+            }
+
+            var advancedStaggeringAnimation = (function () {
+                var staggerVisualizerEl = document.querySelector(
+                    ".stagger-visualizer",
+                );
+                var dotsWrapperEl =
+                    staggerVisualizerEl.querySelector(".dots-wrapper");
+                var dotsFragment = document.createDocumentFragment();
+                var grid = [20, 10];
+                var cell = 55;
+                var numberOfElements = grid[0] * grid[1];
+                var animation;
+                var paused = true;
+
+                fitElementToParent(staggerVisualizerEl, 0);
+
+                for (var i = 0; i < numberOfElements; i++) {
+                    var dotEl = document.createElement("div");
+                    dotEl.classList.add("dot");
+                    dotsFragment.appendChild(dotEl);
+                }
+
+                dotsWrapperEl.appendChild(dotsFragment);
+
+                var index = anime.random(0, numberOfElements - 1);
+                var nextIndex = 0;
+
+                anime.set(".stagger-visualizer .cursor", {
+                    translateX: anime.stagger(-cell, {
+                        grid: grid,
+                        from: index,
+                        axis: "x",
+                    }),
+                    translateY: anime.stagger(-cell, {
+                        grid: grid,
+                        from: index,
+                        axis: "y",
+                    }),
+                    translateZ: 0,
+                    scale: 1.5,
+                });
+
+                function play() {
+                    paused = false;
+                    if (animation) animation.pause();
+
+                    nextIndex = anime.random(0, numberOfElements - 1);
+
+                    animation = anime
+                        .timeline({
+                            easing: "easeInOutQuad",
+                            complete: play,
+                        })
+                        .add({
+                            targets: ".stagger-visualizer .cursor",
+                            keyframes: [
+                                { scale: 0.75, duration: 120 },
+                                { scale: 2.5, duration: 220 },
+                                { scale: 1.5, duration: 450 },
+                            ],
+                            duration: 300,
+                        })
+                        .add(
+                            {
+                                targets: ".stagger-visualizer .dot",
+                                keyframes: [
+                                    {
+                                        translateX: anime.stagger("-2px", {
+                                            grid: grid,
+                                            from: index,
+                                            axis: "x",
+                                        }),
+                                        translateY: anime.stagger("-2px", {
+                                            grid: grid,
+                                            from: index,
+                                            axis: "y",
+                                        }),
+                                        duration: 100,
+                                    },
+                                    {
+                                        translateX: anime.stagger("4px", {
+                                            grid: grid,
+                                            from: index,
+                                            axis: "x",
+                                        }),
+                                        translateY: anime.stagger("4px", {
+                                            grid: grid,
+                                            from: index,
+                                            axis: "y",
+                                        }),
+                                        scale: anime.stagger([2.6, 1], {
+                                            grid: grid,
+                                            from: index,
+                                        }),
+                                        duration: 225,
+                                    },
+                                    {
+                                        translateX: 0,
+                                        translateY: 0,
+                                        scale: 1,
+                                        duration: 1200,
+                                    },
+                                ],
+                                delay: anime.stagger(80, {
+                                    grid: grid,
+                                    from: index,
+                                }),
+                            },
+                            30,
+                        )
+                        .add(
+                            {
+                                targets: ".stagger-visualizer .cursor",
+                                translateX: {
+                                    value: anime.stagger(-cell, {
+                                        grid: grid,
+                                        from: nextIndex,
+                                        axis: "x",
+                                    }),
+                                },
+                                translateY: {
+                                    value: anime.stagger(-cell, {
+                                        grid: grid,
+                                        from: nextIndex,
+                                        axis: "y",
+                                    }),
+                                },
+                                scale: 1.5,
+                                easing: "cubicBezier(.075, .2, .165, 1)",
+                            },
+                            "-=800",
+                        );
+
+                    index = nextIndex;
+                }
+
+                play();
+            })();
+        </script>
+
+        <script>
+            const perguntasNomeacao = [
+                { imagem: "imagens/mesa (1).png", respostaCorreta: "mesa" },
+                { imagem: "imagens/cama.png", respostaCorreta: "cama" },
+                { imagem: "imagens/casa.png", respostaCorreta: "casa" },
+                { imagem: "imagens/flor.png", respostaCorreta: "flor" },
+                { imagem: "imagens/ovo.png", respostaCorreta: "ovo" },
+                { imagem: "imagens/banana.png", respostaCorreta: "banana" },
+            ];
+
+            const perguntasAudio = [
+                { audio: "audiorep/recording1.wav", respostaCorreta: "rádio" },
+                {
+                    audio: "audiorep/recording2.wav",
+                    respostaCorreta: "grande",
+                },
+                { audio: "audiorep/recording3.wav", respostaCorreta: "pão" },
+                {
+                    audio: "audiorep/recording4.wav",
+                    respostaCorreta: "algumas vezes",
+                },
+                {
+                    audio: "audiorep/recording5.wav",
+                    respostaCorreta: "fecha a porta",
+                },
+                {
+                    audio: "audiorep/recording6.wav",
+                    respostaCorreta: "a bola é do menino",
+                },
+            ];
+
+            const perguntasCompreensao = [
+                {
+                    pergunta: "A jaqueta é vermelha?",
+                    audio: "audiorep/recording7.wav",
+                    respostaCorreta: "sim",
+                },
+                {
+                    pergunta: "A porta está fechada?",
+                    audio: "audiorep/recording8.wav",
+                    respostaCorreta: "sim",
+                },
+                {
+                    pergunta: "É um dia chuvoso?",
+                    audio: "audiorep/recording9.wav",
+                    respostaCorreta: "não",
+                },
+            ];
+
+            const perguntas = [
+                ...perguntasNomeacao.map((p) => ({
+                    tipo: "imagem",
+                    pergunta: "O que é isso?",
+                    imagem: p.imagem,
+                    respostaCorreta: p.respostaCorreta,
+                })),
+                ...perguntasAudio.map((p) => ({
+                    tipo: "audio",
+                    pergunta: "O que você escutou?",
+                    respostaCorreta: p.respostaCorreta,
+                    audio: p.audio,
+                })),
+                ...perguntasCompreensao.map((p) => ({
+                    tipo: "sim_nao",
+                    pergunta: p.pergunta,
+                    respostaCorreta: p.respostaCorreta,
+                })),
+            ];
+
+            let perguntaAtual = 0;
+            let nome = 0;
+            let rep = 0;
+            let comp = 0;
+
+            function iniciarTeste() {
+                console.log("teste sendo iniciado!");
+                document.getElementById("inicio").style.display = "none";
+                document.getElementById("teste").style = `
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+              align-items: center;
+              height: 100vh;
+            `;
+
+                mostrarPergunta();
+                // Adiciona o evento de escuta no campo de resposta para a tecla "Enter"
+                document
+                    .getElementById("resposta")
+                    .addEventListener("keydown", function (event) {
+                        if (event.key === "Enter") {
+                            event.preventDefault(); // Previne o comportamento padrão de quebra de linha
+                            submeterResposta(); // Chama a função de envio da resposta
+                        }
+                    });
+            }
+
+            function mostrarPergunta() {
+                if (perguntaAtual < perguntas.length) {
+                    document.getElementById("resposta").value = "";
+                    const pergunta = perguntas[perguntaAtual];
+
+                    // Atualiza de acordo com o tipo de pergunta
+                    if (pergunta.tipo === "imagem") {
+                        document.getElementById(
+                            "nomeacaoTitulo",
+                        ).style.display = "flex";
+                        document.getElementById("imagemNomeacao").src =
+                            pergunta.imagem;
+
+                        document.getElementById(
+                            "imagemNomeacao",
+                        ).style.display = "flex";
+                        document.getElementById("imagemNomeacao").style = `
+                          height: 40vh;
+                          width: 100%;
+                          object-fit: contain;
+                          padding-bottom: 20px;
+                          padding-top: 20px;
+                        `;
+                        document.getElementById("audio").style.display = "none";
+                        document.getElementById("audioBtn").style.display =
+                            "none";
+                        document.getElementById(
+                            "compreensaoTitulo",
+                        ).style.display = "none";
+                    } else if (pergunta.tipo === "audio") {
+                        document.getElementById(
+                            "audioContainer",
+                        ).style.display = "flex";
+                        document.getElementById(
+                            "compreensaoTitulo",
+                        ).style.display = "flex";
+                        document.getElementById(
+                            "compreensaoTitulo",
+                        ).textContent = pergunta.pergunta; // Exibe a pergunta de áudio
+                        document.getElementById("audio").src = pergunta.audio;
+                        document.getElementById("audio").style.display = "flex";
+                        document.getElementById("audioBtn").style.display =
+                            "flex";
+                        document.getElementById(
+                            "nomeacaoTitulo",
+                        ).style.display = "none";
+                        document.getElementById(
+                            "imagemNomeacao",
+                        ).style.display = "none";
+                    } else if (pergunta.tipo === "sim_nao") {
+                        const audioCompreensao = perguntasCompreensao.find(
+                            (p) => p.pergunta === pergunta.pergunta,
+                        );
+                        if (audioCompreensao) {
+                            const audioElement =
+                                document.getElementById("audio");
+                            audioElement.src = audioCompreensao.audio; // Define o áudio correto
+                            audioElement.style.display = "block"; // Exibe o elemento de áudio
+                        }
+                        document.getElementById(
+                            "compreensaoTitulo",
+                        ).style.display = "block";
+                        document.getElementById(
+                            "compreensaoTitulo",
+                        ).textContent = pergunta.pergunta;
+                        document.getElementById(
+                            "nomeacaoTitulo",
+                        ).style.display = "none";
+                        document.getElementById(
+                            "imagemNomeacao",
+                        ).style.display = "none";
+                        document.getElementById(
+                            "repeticaoTitulo",
+                        ).style.display = "none";
+                        document.getElementById("audioBtn").style.display =
+                            "block"; // Exibe o botão de tocar áudio
+                    }
+
+                    document.getElementById("submitBtn").style.display =
+                        "block";
+                } else {
+                    calcularDiagnostico();
+                }
+            }
+
+            function submeterResposta() {
+                const resposta = normalizarTexto(
+                    document.getElementById("resposta").value,
+                );
+                const respostaCorreta = normalizarTexto(
+                    perguntas[perguntaAtual].respostaCorreta,
+                );
+
+                if (resposta === respostaCorreta) {
+                    if (perguntas[perguntaAtual].tipo === "imagem") {
+                        nome++;
+                    } else if (perguntas[perguntaAtual].tipo === "audio") {
+                        rep++;
+                    } else if (perguntas[perguntaAtual].tipo === "sim_nao") {
+                        comp++;
+                    }
+                }
+
+                perguntaAtual++;
+                mostrarPergunta();
+            }
+
+            function calcularDiagnostico() {
+                let resultado = document.getElementById("resultado");
+                let diagnostico = "";
+
+                if (comp === 3 && nome < 6 && rep < 6) {
+                    diagnostico =
+                        "Você provavelmente tem afasia de Broca, Condução ou Global!";
+                } else if (comp < 3 && nome < 6 && rep < 6) {
+                    diagnostico = "Você provavelmente tem afasia de Wernicke";
+                } else if (comp == 3 && nome < 6 && rep == 6) {
+                    diagnostico =
+                        "Você provavelmente tem afasia Anômica ou Transcortical-motora";
+                } else if (comp < 3 && nome < 6 && rep == 6) {
+                    diagnostico =
+                        "Você provavelmente tem afasia Transcortical Sensorial ou Transcortical Mista.";
+                } else {
+                    diagnostico = "Você não possui nenhum tipo de afasia.";
+                }
+
+                // Exibe o resultado em tela cheia
+                resultado.innerHTML = diagnostico;
+                resultado.style.display = "block"; // Exibe o resultado
+                document.getElementById("teste").style.display = "none"; // Oculta o teste após o término
+
+                // Enviar resultado via axios (se aplicável)
+                axios.post("http://localhost:3000/submit-test", {
+                    compreensao: comp,
+                    nomeacao: nome,
+                    resultadoFinal: diagnostico,
+                    repeticao: rep,
+                });
+            }
+
+            function normalizarTexto(texto) {
+                return texto.trim().toLowerCase(); // Normaliza a resposta para comparação
+            }
+
+            function tocarAudio() {
+                const audioElement = document.getElementById("audio");
+                audioElement.play(); // Toca o áudio
+            }
+        </script>
+    </body>
+</html>
