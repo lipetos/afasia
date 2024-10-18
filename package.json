@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "serve",
-    "start_db_server": "node server.js"
+    "start_db_server": "pm2 start server.js"
   },
   "keywords": [
     "html",
