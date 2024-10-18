@@ -26,6 +26,10 @@ const DiagnosticsModel = mongoose.model("Diagnostic", {
   resultadoFinal: String,
 });
 
+app.post("/", (req, res) => {
+  res.status(200).send('Request successful!');
+})
+
 app.post("/submit-test", (req, res) => {
   // // Capturar os dados enviados pelo frontend
   // ;
