@@ -30,7 +30,7 @@ app.post("/", (req, res) => {
   res.status(200).send('Request successful!');
 })
 
-app.post("/get-data", async (req, res) => {
+app.get("/get-data", async (req, res) => {
   try {
     const data = await DiagnosticsModel.find()
 
