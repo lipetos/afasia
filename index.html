@@ -308,6 +308,7 @@
             </div>
         </div>
         <div id="resultado"></div>
+        <a href="./dados.html">ver dados</a>
 
         <script>
             const perguntasNomeacao = [
@@ -538,7 +539,7 @@
                 document.getElementById("teste").style.display = "none"; // Oculta o teste após o término
 
                 // Enviar resultado via axios (se aplicável)
-                axios.post("http://3.12.241.151/submit-test", {
+                axios.post("http://3.12.241.151:3000/submit-test", {
                     compreensao: comp,
                     nomeacao: nome,
                     resultadoFinal: diagnostico,

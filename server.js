@@ -24,32 +24,24 @@ const DiagnosticsModel = mongoose.model("Diagnostic", {
   repeticao: Number,
   compreensao: Number,
   resultadoFinal: String,
-});
+}, {collection: "diagnostics"});
 
 app.post("/", (req, res) => {
   res.status(200).send('Request successful!');
 })
 
+app.post("/get-data", async (req, res) => {
+  try {
+    const data = await DiagnosticsModel.find()
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("Erro ao buscar eventos:", error);
+    throw error
+  }
+});
+
 app.post("/submit-test", (req, res) => {
-  // // Capturar os dados enviados pelo frontend
-  // ;
-  // // Query SQL para inserir os dados no banco de dados
-  // const query =
-  //   "INSERT INTO diagnosticos (nomeacao, repeticao, compreensao, resultado) VALUES (?, ?, ?, ?)";
-  // // Executar a query e passar os dados
-  // db.query(
-  //   query,
-  //   [nomeacao, repeticao, compreensao, resultadoFinal],
-  //   (err, result) => {
-  //     if (err) {
-  //       console.error(err);
-  //       res.status(500).send("Erro ao salvar os dados");
-  //     } else {
-  //       res.status(200).send("Dados salvos com sucesso");
-  //     }
-  //   },
-  // );
-  //
   const { nomeacao, repeticao, compreensao, resultadoFinal } = req.body;
   const diagnostics = new DiagnosticsModel({
     compreensao: compreensao,
